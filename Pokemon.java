@@ -15,8 +15,7 @@ public class Pokemon {
 	// CONSTRUCTORS
 	public Pokemon(String name, String type1, String type2) {
 		if(!this.setAll(name, type1, type2)) {
-			System.out.println("ERROR: Pokemon full constructor illegal argument passed. Exiting program.");
-			System.exit(0);
+			throw new IllegalArgumentException("Invalid Pokemon data provided.");
 		}
 	}
 
@@ -27,12 +26,14 @@ public class Pokemon {
 		this(DEFAULT_NAME, DEFAULT_TYPE1, DEFAULT_TYPE2);
 	}
 
-	public Pokemon(Pokemon p) throws IllegalArgumentException {
+	public Pokemon(Pokemon p) {
 		if(p == null) {
-			System.out.println("ERROR: Pokemon copy constructor illegal argument (null) passed.");
-			System.exit(0);
+			throw new IllegalArgumentException("Cannot copy a null Pokemon.");
 		}
-		this.setAll(p.name, p.type1, p.type2);
+
+		if(!this.setAll(p.name, p.type1, p.type2)) {
+			throw new IllegalArgumentException("Invalid Pokemon data provided to copy constructor.");
+		}
 	}
 
 	// MUTATOR/SETTER METHODS

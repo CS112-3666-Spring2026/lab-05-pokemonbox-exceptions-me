@@ -9,9 +9,14 @@ public class PokemonBox {
 
 	// CONSTRUCTORS
 	public PokemonBox(Pokemon[] caught) {
-		if(caught == null || caught.length == 0) {
-			System.out.println("ERROR: Invalid Pokemon array provided to PokemonBox. Exiting program.");
-			System.exit(0);
+		if (caught == null || caught.length == 0) {
+			throw new IllegalArgumentException("Invalid Pokemon array provided to PokemonBox.");
+		}
+		
+		for(int i = 0; i < caught.length; i++) {
+			if(caught[i] == null) {
+				throw new IllegalArgumentException("Pokemon array cannot contain null Pokemon.");
+			}
 		}
 		this.numCaught = caught.length;
 		this.caught = this.deepCopyArray(caught, this.numCaught*2);
@@ -40,6 +45,9 @@ public class PokemonBox {
 	}
 
 	public Pokemon getPokemon(int location) {
+		if(location < 0 || location >= this.numCaught) {
+			throw new IndexOutOfBoundsException("Illegal Pokemon location: " + location);
+		}
 		return this.caught[location];
 	}
 
@@ -56,7 +64,15 @@ public class PokemonBox {
 	}
 
 	// MUTATOR/SETTER METHODS
-	public void add(Pokemon newPoke) {
+	public void add(Pokemon newPoke) throws PokemonAlreadyExistsException {
+		if(newPoke == null) {
+			throw new IllegalArgumentException("Cannot add a null Pokemon.");
+		}
+
+		if(getLocation(newPoke.getName()) != -1) {
+			throw new PokemonAlreadyExistsException("You already have this Pokemon!");
+		}
+
 		//new pokemon,  add to partially filled array
 		//but first check if box is full
 		if(this.numCaught == this.caught.length) {
